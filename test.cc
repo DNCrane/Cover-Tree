@@ -11,6 +11,11 @@ void testTree() {
     a.push_back(1.0);
     CoverTree<CoverTreePoint> cTree(10);
     cTree.insert(CoverTreePoint(a,'a'));
+    cTree.insert(CoverTreePoint(a,'b'));
+    cTree.insert(CoverTreePoint(a,'c'));
+    cTree.remove(CoverTreePoint(a,'b'));
+    cTree.remove(CoverTreePoint(a,'c'));
+    
     a[0]=2.1;  cTree.insert(CoverTreePoint(a,'a'));
     a[0]=3.2;  cTree.insert(CoverTreePoint(a,'a'));
     a[0]=4.1;  cTree.insert(CoverTreePoint(a,'a'));

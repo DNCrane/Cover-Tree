@@ -342,14 +342,14 @@ void CoverTree<Point>::remove_rec(const Point& p,
     }
     if(level>_minLevel) remove_rec(p,coverSets,level-1,multi);
     if(minDist == 0.0) {//if minDist is 0.0 then minNode must be removed.
+        //the multi flag indicates the point we removed is from a
+        //node containing multiple points, and we have removed it.
+        if(multi) return;
         if(!minNode->isSingle()) {
             minNode->removePoint(p);
             multi=true;
             return;
         }
-        //the multi flag indicates the point we removed is from a
-        //node containing multiple points, and we have removed it.
-        if(multi) return;
         if(parent!=NULL) parent->removeChild(level, minNode);
         std::vector<CoverTreeNode* > children = minNode->getChildren(level-1);
         std::vector<std::pair<double, CoverTreeNode* > >& Q = coverSets[level-1];
