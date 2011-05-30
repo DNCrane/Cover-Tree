@@ -1,21 +1,20 @@
-This is a C++ implementation of the cover tree datastructure.
+This is a C++ implementation of the cover tree datastructure. Implements the
+cover tree algorithms for insert, removal, and k-nearest-neighbor search.
 
 Relevant links:
 https://secure.wikimedia.org/wikipedia/en/wiki/Cover_tree - Wikipedia's page
 on cover trees.
 http://hunch.net/~jl/projects/cover_tree/cover_tree.html - John Langford's (one
-of the inventors of cover trees) page on cover trees with links to papers. This
-implementation implements the cover tree algorithms for insert, removal, and
-k-nearest-neighbor search as described in the papers.
+of the inventors of cover trees) page on cover trees with links to papers.
 
 To use the Cover Tree, you must implement your own Point class. CoverTreePoint
 is provided for testing and as an example. Your Point class must implement the
 following functions:
 
-double distance(const YourPoint& p);
-bool operator==(const YourPoint& p);
+double YourPoint::distance(const YourPoint& p);
+bool YourPoint::operator==(const YourPoint& p);
 and optionally (for debugging/printing only):
-void print();
+void YourPoint::print();
 
 The distance function must be a Metric, meaning (from Wikipedia):
 1: d(x, y) = 0   if and only if   x = y
@@ -25,7 +24,7 @@ The distance function must be a Metric, meaning (from Wikipedia):
 See https://secure.wikimedia.org/wikipedia/en/wiki/Metric_%28mathematics%29
 for details.
 
-actually, 1 does not exactly need to hold for this implementation; you can
+Actually, 1 does not exactly need to hold for this implementation; you can
 provide, for example, names for your points which are unrelated to distance
 but important for equality. You can insert multiple points with distance 0 to
 each other and the tree will keep track of them, but you cannot insert multiple
