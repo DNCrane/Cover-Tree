@@ -201,8 +201,7 @@ CoverTree<Point>::~CoverTree()
         //std::cout << _numNodes << "\n";
         delete byeNode;
         _numNodes--;
-    }
-    
+    }   
 }
 
 template<class Point>
@@ -454,7 +453,10 @@ void CoverTree<Point>::remove(const Point& p)
     //Most of this function's code is for the special case of removing the root
     if(_root==NULL) return;
     bool removingRoot=_root->getPoint()==p;
-    if(removingRoot && !_root->isSingle()) _root->removePoint(p);
+    if(removingRoot && !_root->isSingle()) {
+        _root->removePoint(p);
+        return;
+    }
     CoverTreeNode* newRoot=NULL;
     if(removingRoot) {
         if(_numNodes==1) {
