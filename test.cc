@@ -146,6 +146,9 @@ void bigTest(unsigned int numNodes, unsigned int numDimensions){
 }
 int main()
 {    
+    /* initialize random seed: */
+    srand(1);
+
     testTree();
     bigTest(3000,50);
     return 0;
