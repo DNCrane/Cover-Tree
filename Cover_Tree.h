@@ -76,7 +76,8 @@ class CoverTree
         double distance(const CoverTreeNode& p) const;
         
         bool isSingle() const;
-        
+        bool hasPoint(const Point& p) const;
+            
         const Point& getPoint() const;
         
         /**
@@ -452,7 +453,7 @@ void CoverTree<Point>::remove(const Point& p)
 {
     //Most of this function's code is for the special case of removing the root
     if(_root==NULL) return;
-    bool removingRoot=_root->getPoint()==p;
+    bool removingRoot=_root->hasPoint(p);
     if(removingRoot && !_root->isSingle()) {
         _root->removePoint(p);
         return;
@@ -609,6 +610,16 @@ bool CoverTree<Point>::CoverTreeNode::isSingle() const
 {
     if(_points.size()>1) return false;
     return true;
+}
+
+template<class Point>
+bool CoverTree<Point>::CoverTreeNode::hasPoint(const Point& p) const
+{
+    typename std::vector<Point>::const_iterator it;
+    for(it=_points.begin(); it!=_points.end(); it++) {
+        if(p==(*it)) return true;
+    }
+    return false;
 }
 
 template<class Point>
