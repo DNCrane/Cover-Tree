@@ -453,7 +453,8 @@ void CoverTree<Point>::remove(const Point& p)
 {
     //Most of this function's code is for the special case of removing the root
     if(_root==NULL) return;
-    bool removingRoot=p.distance(_root->getPoint())==0.0;
+    bool removingRoot=_root->getPoint()==p;
+    if(removingRoot && !_root->isSingle()) _root->removePoint(p);
     CoverTreeNode* newRoot=NULL;
     if(removingRoot) {
         if(_numNodes==1) {
