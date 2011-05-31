@@ -341,9 +341,10 @@ void CoverTree<Point>::remove_rec(const Point& p,
         }
     }
     if(level>_minLevel) remove_rec(p,coverSets,level-1,multi);
-    if(minNode->hasPoint(p)) {//minDist == 0.0) {//if minDist is 0.0 then minNode must be removed.
+    if(minNode->hasPoint(p)) {
         //the multi flag indicates the point we removed is from a
-        //node containing multiple points, and we have removed it.
+        //node containing multiple points, and we have removed it,
+        //so we don't need to do anything else.
         if(multi) return;
         if(!minNode->isSingle()) {
             minNode->removePoint(p);
