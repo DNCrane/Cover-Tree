@@ -41,8 +41,7 @@ void testTree() {
     else cout << "KNN test: \t\t\t\tFailed\n";
     
     cTree.insert(CoverTreePoint(a,'b'));
-    cTree.insert(CoverTreePoint(a,'c'));
-    
+    cTree.insert(CoverTreePoint(a,'c'));    
     
     points = cTree.kNearestNeighbors(CoverTreePoint(a,'a'), 1);
     //there should be a three-way tie since there are 3 nodes with distance 0
@@ -64,15 +63,22 @@ void testTree() {
         cout << "Remove nonexistent point test: \t\tPassed\n";
     else cout << "Remove nonexistent point test: \t\tFailed\n";
 
+    a[0]=1.1;   cTree.remove(CoverTreePoint(a,'b')); //this has dist 0 to a
+    //node in cTree, but it is a different point, so the removal should not
+    //alter the tree at all.
+    points = cTree.kNearestNeighbors(CoverTreePoint(a,'c'),1);
+    if(points[0]==CoverTreePoint(a,'a') && cTree.isValidTree()) cout << "Remove differently-named point test: \tPassed\n";
+    else cout << "Remove differently-named point test: \tFailed\n";
+    
     a[0]=3.2;  cTree.remove(CoverTreePoint(a,'a'));
     a[0]=1.1;  cTree.remove(CoverTreePoint(a,'a'));
     a[0]=2.5;  cTree.remove(CoverTreePoint(a,'a'));
     if(cTree.isValidTree()) cout << "Remove test: \t\t\t\tPassed\n";
-    else cout << "Remove test: \t\t\t\tPassed\n";
+    else cout << "Remove test: \t\t\t\tFailed\n";
 
     a[0]=1.0;  cTree.remove(CoverTreePoint(a,'a'));
     if(cTree.isValidTree()) cout << "Remove root test: \t\t\tPassed\n";
-    else cout << "Remove root test: \t\t\tPassed\n";
+    else cout << "Remove root test: \t\t\tFailed\n";
 
     vector<double> start;
     for(int j=0;j<5;j++) start.push_back((double)rand()/(double)RAND_MAX);
@@ -97,7 +103,7 @@ void testTree() {
         points.push_back(CoverTreePoint(a,'a'));
     }
     if(cTree2.isValidTree()) cout << "500 random inserts test: \t\tPassed\n";
-    else cout << "500 random inserts test: \t\tPassed\n";
+    else cout << "500 random inserts test: \t\tFailed\n";
 
     bool NNGood=true;
     for(int i=0;i<100;i++) {

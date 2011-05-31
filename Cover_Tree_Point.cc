@@ -38,5 +38,5 @@ void CoverTreePoint::print() const {
 }
 
 bool CoverTreePoint::operator==(const CoverTreePoint& p) const {
-    return (this->distance(p)==0.0 && _name==p.getChar());
+    return (_vec==p.getVec() && _name==p.getChar());
 }
