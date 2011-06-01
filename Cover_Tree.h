@@ -162,7 +162,7 @@ class CoverTree
      * is closest to p, 1th is next, etc). It may return greater than k points
      * if there is a tie for the kth place.
      */
-    std::vector<Point> kNearestNeighbors(const Point& p, const unsigned int& k);
+    std::vector<Point> kNearestNeighbors(const Point& p, const unsigned int& k) const;
 
     CoverTreeNode* getRoot() const;
 
@@ -490,7 +490,7 @@ void CoverTree<Point>::remove(const Point& p)
 
 template<class Point>
 std::vector<Point> CoverTree<Point>::kNearestNeighbors(const Point& p,
-                                                       const unsigned int& k)
+                                                       const unsigned int& k) const
 {
     if(_root==NULL) return std::vector<Point>();
     std::vector<CoverTreeNode*> v = kNearestNodes(p, k);
