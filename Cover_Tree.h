@@ -93,7 +93,7 @@ class CoverTree
     int _minLevel;//A level beneath which there are no more new nodes.
 
     std::vector<CoverTreeNode* >
-        kNearestNodes(const Point& p, const unsigned int& k);
+        kNearestNodes(const Point& p, const unsigned int& k) const;
     /**
      * Recursive implementation of the insert algorithm (see paper).
      */
@@ -206,7 +206,7 @@ CoverTree<Point>::~CoverTree()
 
 template<class Point>
 std::vector<typename CoverTree<Point>::CoverTreeNode*>
-CoverTree<Point>::kNearestNodes(const Point& p, const unsigned int& k)
+CoverTree<Point>::kNearestNodes(const Point& p, const unsigned int& k) const
 {
     if(_root==NULL) return std::vector<CoverTreeNode* >();
     //maxDist is the kth nearest known point to p, and also the farthest
@@ -215,8 +215,7 @@ CoverTree<Point>::kNearestNodes(const Point& p, const unsigned int& k)
     //minNodes stores the k nearest known points to p.
     std::set<std::pair<double, CoverTreeNode* > > minNodes;
 
-    minNodes.insert(make_pair(maxDist,
-                              _root));
+    minNodes.insert(make_pair(maxDist,_root));
     std::vector<std::pair<double,CoverTreeNode* > >
         Qj(1,make_pair(maxDist,_root));
     for(int level = _maxLevel; level>=_minLevel;level--) {
@@ -250,7 +249,7 @@ CoverTree<Point>::kNearestNodes(const Point& p, const unsigned int& k)
         }
     }
     std::vector<CoverTreeNode* > kNN;
-    typename std::set<std::pair<double, CoverTreeNode* > >::iterator it;
+    typename std::set<std::pair<double, CoverTreeNode* > >::const_iterator it;
     for(it=minNodes.begin();it!=minNodes.end();++it) {
         kNN.push_back(it->second);
     }
