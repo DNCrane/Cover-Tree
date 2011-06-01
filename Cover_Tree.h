@@ -608,11 +608,7 @@ bool CoverTree<Point>::CoverTreeNode::isSingle() const
 template<class Point>
 bool CoverTree<Point>::CoverTreeNode::hasPoint(const Point& p) const
 {
-    typename std::vector<Point>::const_iterator it;
-    for(it=_points.begin(); it!=_points.end(); it++) {
-        if(p==(*it)) return true;
-    }
-    return false;
+    return find(_points.begin(), _points.end(), p) != _points.end();
 }
 
 template<class Point>
