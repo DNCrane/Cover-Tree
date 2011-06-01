@@ -138,7 +138,7 @@ class CoverTree
      * or equal to base^i distance from its children). See the cover tree
      * papers for details.
      */
-    bool isValidTree();
+    bool isValidTree() const;
 
     /**
      * Insert newPoint into the cover tree. If newPoint is already present,
@@ -627,7 +627,7 @@ CoverTree<Point>::CoverTreeNode::getAllChildren() const
 }
 
 template<class Point>
-bool CoverTree<Point>::isValidTree() {
+bool CoverTree<Point>::isValidTree() const {
     if(_numNodes==0)
         return _root==NULL;
 
