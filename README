@@ -1,6 +1,10 @@
 This is a C++ implementation of the cover tree datastructure. Implements the
 cover tree algorithms for insert, removal, and k-nearest-neighbor search.
 
+To build simply type make in the terminal from the project directory. Do
+./test to run the tests. Look in test.cc for example code of how to use the
+cover tree.
+
 Relevant links:
 https://secure.wikimedia.org/wikipedia/en/wiki/Cover_tree - Wikipedia's page
 on cover trees.
@@ -32,9 +36,7 @@ points that are equal to each other; attempting to insert a point that
 already exists in the tree will not alter the tree at all.
 
 If you do not want to allow multiple nodes with distance 0, then just make
-your equality operator always return true when distance is 0. If you want
-to allow multiple points of distance 0 but do not want to add a name or other
-identifier to them, you can have your equality operator always return false.
+your equality operator always return true when distance is 0.
 
 TODO:
 -The papers describe batch insert and batch-nearest-neighbors algorithms which
