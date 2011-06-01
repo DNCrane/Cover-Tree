@@ -200,7 +200,7 @@ CoverTree<Point>::~CoverTree()
         nodes.insert(nodes.begin(),children.begin(),children.end());
         //std::cout << _numNodes << "\n";
         delete byeNode;
-        _numNodes--;
+        //_numNodes--;
     }   
 }
 
