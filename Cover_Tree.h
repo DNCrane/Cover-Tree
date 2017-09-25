@@ -444,8 +444,8 @@ void CoverTree<Point>::insert(const Point& newPoint)
     
     if(_numNodes == 1) {
         _maxLevel = rqdLevel+1;
-        _minLevel = rqdLevel;
-        _root->addChild(_minLevel, new CoverTreeNode(newPoint));
+        _minLevel = rqdLevel-1;
+        _root->addChild(rqdLevel, new CoverTreeNode(newPoint));
         _numNodes++;
         return;
     }
