@@ -11,7 +11,7 @@ double CoverTreePoint::distance(const CoverTreePoint& p) const {
     timescalled++;
     const vector<double>& vec=p.getVec();
     double dist=0;
-    int lim = vec.size();
+    size_t lim = vec.size();
     for(int i=0; i<lim;i++) {
         double d = vec[i]-_vec[i];
         dist+=d*d;
