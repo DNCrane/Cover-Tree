@@ -9,13 +9,13 @@ using namespace std;
 void testTree() {
     vector<double> a;
     a.push_back(1.0);
-    CoverTree<CoverTreePoint> cTree(10);
+    CoverTree<CoverTreePoint> cTree;
     cTree.insert(CoverTreePoint(a,'a'));
     cTree.insert(CoverTreePoint(a,'b'));
     cTree.insert(CoverTreePoint(a,'c'));
     cTree.remove(CoverTreePoint(a,'b'));
     cTree.remove(CoverTreePoint(a,'c'));
-    
+
     a[0]=2.1;  cTree.insert(CoverTreePoint(a,'a'));
     a[0]=3.2;  cTree.insert(CoverTreePoint(a,'a'));
     a[0]=4.1;  cTree.insert(CoverTreePoint(a,'a'));
@@ -87,7 +87,7 @@ void testTree() {
     initVec.push_back(CoverTreePoint(start,'a'));
 
     CoverTree<CoverTreePoint>
-        cTree2(10,initVec);
+        cTree2(initVec);
     cTree2.remove(CoverTreePoint(start,'a'));//Now the tree has no nodes...
     //make sure it can handle trying to remove a node when
     //it has no nodes to begin with...
@@ -131,7 +131,7 @@ void bigTest(unsigned int numNodes, unsigned int numDimensions){
         points.push_back(CoverTreePoint(a,'a'));
     }
     cout << "Building Cover Tree with " << numNodes << " nodes\n";
-    CoverTree<CoverTreePoint> cTree(51,points);
+    CoverTree<CoverTreePoint> cTree(points);
     cout << "Cover tree built.\n";
 
     cout << "2000 random NN searches beginning...\n";

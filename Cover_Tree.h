@@ -90,12 +90,11 @@ class CoverTree
 
     CoverTreeNode* _root;
     unsigned int _numNodes;
-    int _maxLevel;//base^_maxLevel should be the max distance
-                  //between any 2 points
+    int _maxLevel;//The level at which (and above) there is only one node: the root node
     int _minLevel;//A level beneath which there are no more new nodes.
 
     std::vector<CoverTreeNode*>
-        kNearestNodes(const Point& p, const unsigned int& k) const;
+        kNearestNodes(const Point& p, const unsigned int k) const;
     /**
      * Recursive implementation of the insert algorithm (see paper).
      */
@@ -117,7 +116,7 @@ class CoverTree
                     bool& multi);
 
  public:
-    static const double base = 2.0;
+    constexpr static const double base = 2.0;
 
     /**
      * Constructs a cover tree which begins with all points in points.
@@ -128,8 +127,7 @@ class CoverTree
      * if an inaccurate maxDist is given.
      */
     
-    CoverTree(const double& maxDist,
-              const std::vector<Point>& points=std::vector<Point>()); 
+    CoverTree(const std::vector<Point>& points=std::vector<Point>());
     ~CoverTree();
 
     /**
@@ -162,7 +160,7 @@ class CoverTree
      * is closest to p, 1th is next, etc). It may return greater than k points
      * if there is a tie for the kth place.
      */
-    std::vector<Point> kNearestNeighbors(const Point& p, const unsigned int& k) const;
+    std::vector<Point> kNearestNeighbors(const Point& p, const unsigned int k) const;
 
     CoverTreeNode* getRoot() const;
 
@@ -173,13 +171,14 @@ class CoverTree
 }; // CoverTree class
 
 template<class Point>
-CoverTree<Point>::CoverTree(const double& maxDist,
-                            const std::vector<Point>& points)
+CoverTree<Point>::CoverTree(const std::vector<Point>& points)
 {
     _root=NULL;
     _numNodes=0;
-    _maxLevel=ceilf(log(maxDist)/log(base));
-    _minLevel=_maxLevel-1;
+    // levels don't have meaning until there are at least 2 nodes
+    //   min/max levels will be set on addition of 2nd node
+    _maxLevel=0;
+    _minLevel=0;
     typename std::vector<Point>::const_iterator it;
     for(it=points.begin(); it!=points.end(); ++it) {
         this->insert(*it);
@@ -207,23 +206,24 @@ CoverTree<Point>::~CoverTree()
 
 template<class Point>
 std::vector<typename CoverTree<Point>::CoverTreeNode*>
-CoverTree<Point>::kNearestNodes(const Point& p, const unsigned int& k) const
+CoverTree<Point>::kNearestNodes(const Point& p, const unsigned int k) const
 {
     if(_root==NULL) return std::vector<CoverTreeNode*>();
+    if(_numNodes<2) return std::vector<CoverTreeNode*>(1,_root);
+    
     //maxDist is the kth nearest known point to p, and also the farthest
     //point from p in the set minNodes defined below.
     double maxDist = p.distance(_root->getPoint());
+    
     //minNodes stores the k nearest known points to p.
     std::set<distNodePair> minNodes;
-
     minNodes.insert(std::make_pair(maxDist,_root));
+    
     std::vector<distNodePair> Qj(1,std::make_pair(maxDist,_root));
-    for(int level = _maxLevel; level>=_minLevel;level--) {
-        typename std::vector<distNodePair>::const_iterator it;
-        int size = Qj.size();
+    for(int level=_maxLevel; level>=_minLevel; level--) {
+        size_t size = Qj.size();
         for(int i=0; i<size; i++) {
-            std::vector<CoverTreeNode*> children =
-                Qj[i].second->getChildren(level);
+            std::vector<CoverTreeNode*> children = Qj[i].second->getChildren(level);
             typename std::vector<CoverTreeNode*>::const_iterator it2;
             for(it2=children.begin(); it2!=children.end(); ++it2) {
                 double d = p.distance((*it2)->getPoint());
@@ -369,7 +369,7 @@ void CoverTree<Point>::remove_rec(const Point& p,
             int i = level-1;
             Point q = (*it)->getPoint();
             double minDQ = DBL_MAX;
-            CoverTreeNode* minDQNode;
+            CoverTreeNode* minDQNode = nullptr;
             double sep = pow(base,i);
             bool br=false;
             while(true) {
@@ -432,6 +432,28 @@ void CoverTree<Point>::insert(const Point& newPoint)
         _numNodes=1;
         return;
     }
+    
+    double rootDist = newPoint.distance(_root->getPoint());
+    
+    if( rootDist == 0.0) {
+        _root->addPoint(newPoint);
+        return;
+    }
+    
+    int    rqdLevel = ceilf(log(rootDist)/log(base));
+    
+    if(_numNodes == 1) {
+        _maxLevel = rqdLevel+1;
+        _minLevel = rqdLevel-1;
+        _root->addChild(rqdLevel, new CoverTreeNode(newPoint));
+        _numNodes++;
+        return;
+    }
+    
+    if(rqdLevel >= _maxLevel) {
+        _maxLevel = rqdLevel + 1;
+    }
+    
     //TODO: this is pretty inefficient, there may be a better way
     //to check if the node already exists...
     CoverTreeNode* n = kNearestNodes(newPoint,1)[0];
@@ -490,7 +512,7 @@ void CoverTree<Point>::remove(const Point& p)
 
 template<class Point>
 std::vector<Point> CoverTree<Point>::kNearestNeighbors(const Point& p,
-                                                       const unsigned int& k) const
+                                                       const unsigned int k) const
 {
     if(_root==NULL) return std::vector<Point>();
     std::vector<CoverTreeNode*> v = kNearestNodes(p, k);
@@ -507,6 +529,17 @@ std::vector<Point> CoverTree<Point>::kNearestNeighbors(const Point& p,
 template<class Point>
 void CoverTree<Point>::print() const
 {
+    if(_root==NULL) {
+        std::cout << "Empty Tree\n";
+        return;
+    }
+    
+    if(_numNodes==1) {
+        std::cout << "Single Node -- NO levels\n";
+        _root->getPoint().print();
+        return;
+    }
+    
     int d = _maxLevel-_minLevel+1;
     std::vector<CoverTreeNode*> Q;
     Q.push_back(_root);
@@ -521,18 +554,18 @@ void CoverTree<Point>::print() const
             for(it2=children.begin();it2!=children.end();++it2) {
                 std::cout << "  ";
                 (*it2)->getPoint().print();
-            }
-        }
+}
+    }
         std::vector<CoverTreeNode*> newQ;
         for(it=Q.begin();it!=Q.end();++it) {
             std::vector<CoverTreeNode*>
                 children = (*it)->getChildren(_maxLevel-i);
             newQ.insert(newQ.end(),children.begin(),children.end());
-        }
+    }
         Q.insert(Q.end(),newQ.begin(),newQ.end());
         std::cout << "\n\n";
     }
-}
+      }
 
 template<class Point>
 typename CoverTree<Point>::CoverTreeNode* CoverTree<Point>::getRoot() const
